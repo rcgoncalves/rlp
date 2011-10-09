@@ -1,0 +1,16 @@
+2009-02-07 Rui Carlos A. Gonçalves <rcgoncalves.pt@gmail.com>
+	* Versão 1.1.
+	
+	* Ficheiros da LibRCG actualizados.
+	
+	* Documentação revista.
+
+	* Output do programa traduzido para inglês.
+
+	* src/main.c (opt): Adicionada opção que mostra a versão da aplicação.
+
+	* src/rlp.c (simplex): Adicionado teste para ver quando o ficheiro de
+	output está a NULL, de forma a não tentar imprimir a matriz nesse caso.
+
+2006-12-01 Rui Carlos A. Gonçalves <rcgoncalves.pt@gmail.com>
+	* Version 1.0.
