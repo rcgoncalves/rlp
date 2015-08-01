@@ -1,11 +1,11 @@
 /**
- * Definição de tipos de dados e funções necessários para ler e armazenar os
- *   dados de um problema.
+ * Definitions of data types and functions required to read and store the
+ * data about the problem.
  *
- * @author Rui Carlos A. Gonçalves <rcgoncalves.pt@gmail.com>
+ * @author Rui Carlos Gonçalves
  * @file read.h
- * @version 1.3
- * @date 02/2009
+ * @version 1.5
+ * @date 08/2015
  */
 #ifndef _READ_
 #define _READ_
@@ -15,106 +15,100 @@
 #include "list.h"
 
 /**
- * Estrutura de dados que representa a informação de uma expressão.
+ * Expression structure.
  */
 typedef struct sExp
 {
-  ///Coeficientes das variáveis numa determinada expressão.
+  /// Coefficients of the variables.
   Array coefs;
-  ///Operador relacional da expressão.
+  /// Operator of the expression.
   int op;
-  ///Lado direito da expressão.
+  /// Right-hand side of the expression.
   double rhs;
 }SExp;
 
 /**
- * Definição de uma expressão.
+ * Expression definition.
  */
 typedef SExp* Exp;
 
 /**
- * Estrutura de dados que representa a informação de um problema.
+ * Problem structure.
  */
 typedef struct sProb
 {
-  ///Contém as variáveis e o seu índice.
+  /// Variables and their indexes.
   HashMap pos;
-  ///Permite saber qual a variável associada a um índice.
+  /// Variables on each index.
   Array invpos;
-  ///Lista de expressões (função objectivo e condições).
+  /// List of expressions (objective function, and conditions). 
   List exps;
 }SProb;
 
 /**
- * Definição de um problema.
+ * Problem definition.
  */
 typedef SProb* Prob;
 
 //##############################################################################
 
 /**
- * Inicializa uma variável do tipo @c Exp.
- * Se ocorrer algum erro devolve NULL.
+ * Creates an expression.
  *
- * @param arraysize tamanho do array dos coeficientes.
+ * @param arraysize size of the coefficients array.
  *
- * @return variável inicializada (ou NULL).
+ * @return <tt>NULL</tt> if an error occurred; the new expression otherwise.
  */
 Exp newExp(int arraysize);
 
 /**
- * Inicializa uma variável do tipo @c Prob.
- * Se ocorrer algum erro devolve NULL.
+ * Creates a problem.
  *
- * @return variável inicializada ou NULL.
+ * @return <tt>NULL</tt> if an error occurred; the new problem otherwise.
  */
 Prob newProb();
 
 /**
- * Função de @a hash que será usada para o nome das variáveis.
+ * Hash function for variables names.
  *
- * @param varid identificador da variável.
+ * @param varid the variable identifier.
  *
- * @return número de hash.
+ * @return the hash code of the variable.
  */
 int varhash(const char* varid);
 
 /**
- * Adiciona uma nova condição ao problema e adiciona o coeficiente de uma
- *   variável.
- * Se a variável ainda não existir no conjunto de variáveis, esta é adicionada.
+ * Adds a new condition to the problem, and adds the coefficients of a variable.
+ * If the variable did not exist in the variables set, it is added.
  *
- * @param prob  dados do problema.
- * @param varid identificador da variável.
- * @param varc  índice que a variável terá caso ainda não exista.
- * @param coef  coeficiente da variável.
+ * @param prob  the problem.
+ * @param varid the variable identifier.
+ * @param varc  the index of the variable if it does not exist.
+ * @param coef  the coefficient of the variable.
  *
- * @return 0 se a variável já existia;\n
- *         1 caso contrário.
+ * @return 0 if the variable already existed; 0 otherwise.
  */
 int addCoefHead(Prob prob,const char* varid,int varc,double coef);
 
 /**
- * Adiciona o coeficiente de uma variável.
- * Se a variável ainda não existir no conjunto de variáveis, esta é adicionada.
+ * Adds the coefficient of a variable.
+ * If the variable did not exist in the variables set, it is added.
  *
- * @param prob  dados do problema.
- * @param varid identificador da variável.
- * @param varc  índice que a variável terá caso ainda não exista.
- * @param coef  coeficiente da variável.
+ * @param prob  the problem.
+ * @param varid the variable identifier.
+ * @param varc  the index of the variable if it does not exist.
+ * @param coef  the coefficient of the variable.
  *
- * @return 0 se a variável já existia;\n
- *         1 caso contrário.
+ * @return 0 if the variable already existed; 0 otherwise.
  */
 int addCoefTail(Prob prob,const char* varid,int varc,double coef);
 
 /**
- * Adiciona informações sobre o operador relacional e o lado direito de uma
- *   condição.
+ * Adds the relational operator and the right-hand side to a condition.
  *
- * @param prob dados do problema.
- * @param op   identificador do operador relacional.
- * @param rhs  lado direito da condição.
+ * @param prob the problem.
+ * @param op   the identifier of the relational operator.
+ * @param rhs  the right-hand side of the condition.
  *
  * @return 0.
  */

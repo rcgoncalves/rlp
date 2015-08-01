@@ -1,10 +1,10 @@
 /**
- * Definição das funções usadas na 'main'.
+ * Definition of functions used by main.
  *
- * @author Rui Carlos A. Gonçalves <rcgoncalves.pt@gmail.com>
+ * @author Rui Carlos Gonçalves
  * @file main.c
- * @version 1.2
- * @date 02/2009
+ * @version 1.5
+ * @date 08/2015
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,18 +12,18 @@
 #include "main.h"
 
 /**
- * Dado a linha, a coluna e o número de colunas de um array de duas dimensões
- *   obtém o índice dessa posição assumindo que o array é de uma dimensão.
+ * Given a row (<tt>R</tt>), a column (<tt>C</tt>), and the number of columns
+ * (<tt>NC</tt>) of a matrix, computes an equivalent 1D position.
  */
-#define POS(L,C,NC) ((L)*(NC)+(C))
+#define POS(R,C,NC) ((R)*(NC)+(C))
 
-///Mensagens de erro.
-static char* erros[]={"ERROR! Function \'loadMatrix\' -> \'calloc\'.\n"
-                     ,"ERROR! Function \'printRes\' -> \'newArray\'.\n"
-                     ,"ERROR! Function \'printRes\' -> \'malloc\'.\n"
-                     ,"ERROR! Function \'printRes\' -> \'arrayInsert\'.\n"
-                     ,"ERROR! Invalid parameters.\n"
-                     };
+/// Error messages.
+static char* errors[]={"ERROR! Function \'loadMatrix\' -> \'calloc\'.\n"
+                      ,"ERROR! Function \'printRes\' -> \'newArray\'.\n"
+                      ,"ERROR! Function \'printRes\' -> \'malloc\'.\n"
+                      ,"ERROR! Function \'printRes\' -> \'arrayInsert\'.\n"
+                      ,"ERROR! Invalid parameters.\n"
+                      };
 
 //##############################################################################
 
@@ -34,10 +34,10 @@ double* loadMatrix(Prob prob,int varc,int condc,int eqc,int type)
   Exp exp;
 
   k=varc+condc+eqc+2;
-  res=(double*)calloc((condc+1+eqc)*(varc+condc+eqc+2),sizeof(double));
+  res=calloc((condc+1+eqc)*(varc+condc+eqc+2),sizeof(double));
 
   if(!res){
-    fprintf(stderr,erros[0]);
+    fputs(errors[0],stderr);
     exit(1);
   }
 
@@ -111,17 +111,17 @@ void printRes(Array vars,double* tab,const char* varob,int varc,int condc,int ty
   res=newArray(varc);
 
   if(!res){
-    fprintf(stderr,erros[1]);
+    fputs(errors[1],stderr);
     exit(2);
   }
 
   for(i=1;i<condc+1;i++)
     if(tab[POS(i,k-1,k)]<varc)
     {
-      tmp=(double*)malloc(sizeof(double));
+      tmp=malloc(sizeof(double));
 
       if(!tmp){
-        fprintf(stderr,erros[2]);
+	fputs(errors[2],stderr);
         exit(3);
       }
 
@@ -129,7 +129,7 @@ void printRes(Array vars,double* tab,const char* varob,int varc,int condc,int ty
       erro=arrayInsert(res,tab[POS(i,k-1,k)],tmp,0);
 
       if(erro){
-        fprintf(stderr,erros[3]);
+	fputs(errors[3],stderr);
         exit(4);
       }
     }
@@ -202,7 +202,7 @@ int opt(int argc,char** argv,char** in,char** out)
   }
 
   if(optind<argc){
-    fprintf(stderr,erros[4]);
+    fputs(errors[4],stderr);
     exit(5);
   }
 

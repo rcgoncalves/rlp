@@ -1,11 +1,11 @@
 /**
- * Definição de tipos de dados e funções necessários para ler e armazenar os
- *   dados de um problema.
+ * Definitions of data types and functions required to read and store the
+ * data about the problem.
  *
- * @author Rui Carlos A. Gonçalves <rcgoncalves.pt@gmail.com>
+ * @author Rui Carlos Gonçalves
  * @file read.c
- * @version 1.3
- * @date 02/2009
+ * @version 1.5
+ * @date 08/2015
  */
 #include <string.h>
 #include <stdlib.h>
@@ -13,22 +13,22 @@
 #include "read.h"
 
 /**
- * Dado a linha, a coluna e o número de colunas de um array de duas dimensões
- *   obtém o índice dessa posição assumindo que o array é de uma dimensão.
+ * Given a row (<tt>R</tt>), a column (<tt>C</tt>), and the number of columns
+ * (<tt>NC</tt>) of a matrix, computes an equivalent 1D position.
  */
-#define POS(L,C,NC) ((L)*(NC)+(C))
+#define POS(R,C,NC) ((R)*(NC)+(C))
 
-///Mensagens de erro.
-static char* erros[]={"ERROR! Function \'setCoefHead\' -> \'malloc\'.\n"
-                     ,"ERROR! Function \'setCoefHead\' -> \'listInsertLst\'.\n"
-                     ,"ERROR! Function \'setCoefHead\' -> \'arrayInsert\'.\n"
-                     ,"ERROR! Function \'setCoefHead\' -> \'newExp\'.\n"
-                     ,"ERROR! Function \'setCoefHead\' -> \'hashInsert\'.\n"
-                     ,"ERROR! Function \'setCoefTail\' -> \'malloc\'.\n"
-                     ,"ERROR! Function \'setCoefTail\' -> \'hashInsert\' ou"
-                     "\'arrayInsert\'.\n"
-                     ,"ERROR! Function \'setCoefTail\' -> \'arrayInsert\'.\n"
-                     };
+/// Error messages.
+static char* errors[]={"ERROR! Function \'setCoefHead\' -> \'malloc\'.\n"
+                      ,"ERROR! Function \'setCoefHead\' -> \'listInsertLst\'.\n"
+                      ,"ERROR! Function \'setCoefHead\' -> \'arrayInsert\'.\n"
+                      ,"ERROR! Function \'setCoefHead\' -> \'newExp\'.\n"
+                      ,"ERROR! Function \'setCoefHead\' -> \'hashInsert\'.\n"
+                      ,"ERROR! Function \'setCoefTail\' -> \'malloc\'.\n"
+                      ,"ERROR! Function \'setCoefTail\' -> \'hashInsert\' or"
+                      "\'arrayInsert\'.\n"
+                      ,"ERROR! Function \'setCoefTail\' -> \'arrayInsert\'.\n"
+                      };
 
 //##############################################################################
 
@@ -36,7 +36,7 @@ Exp newExp(int size)
 {
   Exp res;
 
-  res=(Exp)malloc(sizeof(SExp));
+  res=malloc(sizeof(SExp));
 
   if(res)
   {
@@ -54,7 +54,7 @@ Prob newProb()
 {
   Prob res;
 
-  res=(Prob)malloc(sizeof(SProb));
+  res=malloc(sizeof(SProb));
 
   if(res)
   {
@@ -91,10 +91,10 @@ int addCoefHead(Prob prob,const char* varid,int varc,double coef)
 
   if(hashGet(prob->pos,(void*)varid,(void**)&vpos))
   {
-    vpos=(int*)malloc(sizeof(int));
+    vpos=malloc(sizeof(int));
 
     if(!vpos){
-      fprintf(stderr,erros[0]);
+      fputs(errors[0],stderr);
       exit(1);
     }
 
@@ -103,7 +103,7 @@ int addCoefHead(Prob prob,const char* varid,int varc,double coef)
     erro+=arrayInsert(prob->invpos,varc,(void**)varid,0);
 
     if(erro){
-      fprintf(stderr,erros[4]);
+      fputs(errors[4],stderr);
       exit(5);
     }
 
@@ -113,21 +113,21 @@ int addCoefHead(Prob prob,const char* varid,int varc,double coef)
   exp=newExp((varc+1>10)?(varc+1):10);
 
   if(!exp){
-    fprintf(stderr,erros[3]);
+    fputs(errors[3],stderr);
     exit(4);
   }
 
   erro=listInsertLst(prob->exps,exp);
 
   if(erro){
-    fprintf(stderr,erros[1]);
+    fputs(errors[1],stderr);
     exit(2);
   }
 
-  tmp=(double*)malloc(sizeof(double));
+  tmp=malloc(sizeof(double));
 
   if(!tmp){
-    fprintf(stderr,erros[0]);
+    fputs(errors[0],stderr);
     exit(1);
   }
     
@@ -135,7 +135,7 @@ int addCoefHead(Prob prob,const char* varid,int varc,double coef)
   erro=arrayInsert(exp->coefs,*vpos,tmp,0);
 
   if(erro){
-    fprintf(stderr,erros[2]);
+    fputs(errors[2],stderr);
     exit(3);
   }
 
@@ -146,7 +146,7 @@ int addCoefHead(Prob prob,const char* varid,int varc,double coef)
 
 int addCoefTail(Prob prob,const char* varid,int varc,double coef)
 {
-  int* vpos,pos,res,erro;
+  int* vpos,pos,res,error;
   double* tmp;
   Exp exp;
 
@@ -155,20 +155,20 @@ int addCoefTail(Prob prob,const char* varid,int varc,double coef)
 
   if(hashGet(prob->pos,(void*)varid,(void**)&vpos))
   {
-    vpos=(int*)malloc(sizeof(int));
+    vpos=malloc(sizeof(int));
 
     if(!vpos){
-      fprintf(stderr,erros[5]);
+      fputs(errors[5],stderr);
       exit(6);
     }
 
     *vpos=varc;
-    erro=hashInsert(prob->pos,(void**)varid,vpos,0);
-    erro+=arrayInsert(prob->invpos,varc,(void**)varid,0);
+    error=hashInsert(prob->pos,(void**)varid,vpos,0);
+    error+=arrayInsert(prob->invpos,varc,(void**)varid,0);
 
-    if(erro)
+    if(error)
     {
-      fprintf(stderr,erros[6]);
+      fputs(errors[6],stderr);
       exit(7);
     }
 
@@ -176,20 +176,20 @@ int addCoefTail(Prob prob,const char* varid,int varc,double coef)
   }
 
   listLst(prob->exps,(void**)&exp);
-  tmp=(double*)malloc(sizeof(double));
+  tmp=malloc(sizeof(double));
 
   if(!tmp){
-    fprintf(stderr,erros[5]);
+    fputs(errors[5],stderr);
     exit(6);
   }
 
   *tmp=coef;
-  erro=arrayInsert(exp->coefs,*vpos,tmp,0);
+  error=arrayInsert(exp->coefs,*vpos,tmp,0);
 
-  if(erro)
+  if(error)
   {
-    fprintf(stderr,erros[7]);
-    fprintf(stderr,"\n%d\n\n",erro);
+    fputs(errors[7],stderr);
+    fprintf(stderr,"\n%d\n\n",error);
     exit(8);
   }
  

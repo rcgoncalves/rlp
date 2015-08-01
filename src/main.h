@@ -1,10 +1,10 @@
 /**
- * Definição das funções usadas na 'main'.
+ * Definition of functions used by main.
  *
- * @author Rui Carlos A. Gonçalves <rcgoncalves.pt@gmail.com>
+ * @author Rui Carlos Gonçalves
  * @file main.h
- * @version 1.2
- * @date 02/2009
+ * @version 1.5
+ * @date 08/2015
  */
 #ifndef _MAIN_
 #define _MAIN_
@@ -13,48 +13,43 @@
 #include "read.h"
 
 /**
- * A partir das informações recolhidas pelo @a parser cria uma matriz
- *   representativa do problema de acordo com o modelo usado pela função
- *   @c simplex.
+ * From the info collected by the parser, creates a matrix representing the
+ * problem to solve, according to the format required by function
+ * <tt>simplex</tt>.
  *
- * @param prob  conjunto de informações sobre o problema.
- * @param varc  número de variáveis.
- * @param condc número de condições.
- * @param eqc   número de vezes que o operador igualdade aparece nas condições.
- * @param type  indica se o problema é de maximização ou minimização (max.: -1,
- *              min.: 1).
+ * @param prob  info about the problem.
+ * @param varc  number of variables.
+ * @param condc number of conditions.
+ * @param eqc   number of conditions with an equality operator.
+ * @param type  determines whether we have a maximization or minimization
+ * problem (max.: -1, min.: 1).
  *
- * @return matriz criada.
+ * @return the matrix created.
  */
 double* loadMatrix(Prob prob,int varc,int condc,int eqc,int type);
 
 /**
- * Imprime o resultado obtido.
+ * Prints the result.
  *
- * @attention restrições que tenham o operador de igualdade contam como duas.
- *
- * @param vars  nome das variáveis associadas a cada posição da tabela.
- * @param tab   tabela resultante da aplicação do @a Algoritmo @a Simplex ao
- *              problema.
- * @param varob variável a maximizar/minimizar.
- * @param varc  número de variáveis do problema.
- * @param condc número de condições do problema.
- * @param type  tipo de problema (max.: -1,min.: 1).
+ * @param vars  name of the variables of each position of the table.
+ * @param tab   table resulting from applying the <em>Simplex</em> algorithm.
+ * @param varob variable to maximize/minimize.
+ * @param varc  number of variables.
+ * @param condc number of conditions
+ * @param type  determines whether we have a maximization or minimization
+ * problem (max.: -1, min.: 1).
  */
 void printRes(Array vars,double* tab,const char* varob,int varc,int condc,int type);
 
 /**
- * Verifica as opções especificadas pelo utilizador.
+ * Checks the options specified by the user.
  *
- * @param argc número de opções lidas.
- * @param argv opções lidas.
- * @param in   endereço onde será colocado o argumento associado à opção
- *             @a input.
- * @param out  endereço onde será colocado o argumento associado à opção
- *             @a output.
+ * @param argc number of options.
+ * @param argv value of the options.
+ * @param in   address for the input option.
+ * @param out  address for the output option.
  *
- * @return 1 se for reconhecida a opção @a table;\n
- *         0 caso contrário.
+ * @return 1 if the <tt>tables</tt> option was set; 0 otherwise.
  */
 int opt(int argc,char** argv,char** in,char** out);
 
