@@ -7,6 +7,8 @@ real    [0-9]+(\.)?[0-9]*
 var     [a-z][a-zA-Z0-9]*
 
 %option yylineno
+%option nounput
+%option noinput
 
 %%
 

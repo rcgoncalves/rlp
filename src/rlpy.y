@@ -6,6 +6,7 @@
 #include "array.h"
 #include "read.h"
 #include "main.h"
+#include "rlp.h"
 
 extern FILE* yyin;
 extern int yylineno;
@@ -18,6 +19,7 @@ int eqc=0;
 char* vobj=NULL;
 Prob prob=NULL;
 
+int yylex();
 void yyerror(const char* msg)
 {fprintf(stderr,"ERROR! line %d: %s - %s\n",yylineno,yytext,msg);exit(255);}
 %}
@@ -28,7 +30,7 @@ void yyerror(const char* msg)
         char* str;
       }
 
-//Símbolos terminais
+// Terminals
 %token OPADD    "+"
 %token OPSUB    "-"
 %token OPMULT   "*"
@@ -41,11 +43,11 @@ void yyerror(const char* msg)
 %token MAX      "MAX"
 %token ST       "ST"
 
-//Símbolos pseudoterminais
+// Pseudo-terminals
 %token <real> REAL
 %token <str> VAR
 
-//Símbolos não terminais
+// Non-terminals
 %type <real> Real
 %type <integer> OpRel Sig
 
@@ -90,8 +92,8 @@ OpRel   : ">="                          {$$=-1;}
 
 int main(int argc,char** argv)
 {
-  double* matrix,*tmp;
-  int err,i,nc,ftab;
+  double* matrix;
+  int err,ftab;
   char* in,*out;
   FILE* fin,*fout;
 
