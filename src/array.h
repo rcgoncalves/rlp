@@ -1,183 +1,193 @@
 /**
- * Implementação de um array dinâmico.
- * Esta biblioteca disponibiliza funções que permitem alocar dinamicamente o
- *   array com o comprimento que desejarmos, tendo o comprimento do array
- *   disponível.\n
- * O array tem também a capacidade de se redimensionar sempre que necessário,
- *   mantendo toda a informação já existente.
+ * Implementation of a dynamic array.
  *
- * @author Rui Carlos A. Gonçalves <rcgoncalves.pt@gmail.com>
+ * Provides functions to create and manipulate a dynamic array with a desired
+ * length.
+ *
+ * The array can resize itself whenever needed, while preserving the previous
+ * values.
+ *
+ * @author Rui Carlos Gonçalves
  * @file array.h
- * @version 2.0.2
- * @date 09/2009
+ * @version 3.0
+ * @date 10/2011
  */
-#ifndef _ARRAY_
-#define _ARRAY_
+#ifndef _ARRAY_H_
+#define _ARRAY_H_
 
 #include "iterator.h"
 
 /**
- * Definição da estrutura do array.
+ * Array structure.
  */
 typedef struct sArray
 {
-  ///Capacidade máxima de elementos do array.
+  ///Current capacity of this array.
   int capacity;
-  ///Número de elementos do array.
+  ///Number of element of this array.
   int size;
-  ///Array de apontadores.
+  ///Array of pointers to this array's elements.
   void** array;
 }SArray;
 
 /**
- * Definição do array.
+ * Array definition.
  */
 typedef SArray* Array;
 
-//##############################################################################
+//==============================================================================
 
 /**
- * Cria um array.
- * Um array trata-se de um vector de elementos associados a uma posição, posição
- *   essa a que podemos aceder em tempo linear.
- * Na criação do array é indicado a dimensão inicial, dimensão essa que pode
- *   posteriormente ser alterada através da função <tt>@ref arrayResize</tt>.\n
- * Se não for possível criar o array devolve NULL.
+ * Creates an empty array, with the specified initial capacity.
  *
- * @param size dimensão pretendida.
+ * The initial capacity must be a positive number.
  *
- * @return array inicializado ou NULL.
+ * @param size the initial capacity of the array
+ *
+ * @return
+ * <tt>NULL</tt> if an error occurred\n
+ * the new array otherwise
  */
 Array newArray(int size);
 
 /**
- * Elimina um array.
+ * Deletes an array.
  *
- * @attention apenas liberta a memória referente à estrutura do array; não
- *            liberta o espaço ocupado pelos elementos nele contidos.
+ * @attention
+ * This function only frees the memory used by the array.  It does not free the
+ * memory used by elements the array contains.
  *
- * @param array array.
+ * @param array the array to be deleted
  */
 void arrayDelete(Array array);
 
 /**
- * Insere um elemento numa determinada posição de um array.
- * A posição, especificado pelo argumento @a index, tem que ser maior do que 0.
- *   Se o tamanho actual do array não permitir a inserção do novo elemento, o
- *   tamanho é aumentado e passa a ser igual ao valor de @a index+1 (se não for
- *   possível aumentar o tamanho do array o elemento não é inserido).
- * Caso a posição já esteja ocupada, a variável @a replace determina se o valor
- *   antigo é ou não substituido (caso seja 0 não há substituição, caso tenha
- *   outro valor o novo elemento é inserido).
+ * Inserts an new element at the specified position of an array.
  *
- * @attention se o elemento a inserir tiver o valor NULL, este não é inserido,
- *            não sendo, como tal, incrementado o número de elementos do array.
+ * The position, specified by argument <tt>index</tt>, must be a non negative
+ * integer.  If necessary, the capacity of the array will be increased to
+ * <tt>index+1</tt>.
  *
- * @param array   array.
- * @param index   posição em que será inserido.
- * @param inf     endereço do elemento que queremos inserir.
- * @param replace variável que determina se elementos já existente são ou não
- *                substituídos.
+ * If the position is already filled, the <tt>replace</tt> argument specifies
+ * whether the new element should be added (it will be added only if
+ * <tt>replace!=0</tt>).
  *
- * @return 0 se o elemento for inserido;\n
- *         1 se a posição já estava ocupada;\n
- *         2 se o valor de @a index não for válido;\n
- *         3 se não for possível aumentar o tamanho do array.
+ * @attention
+ * If the new element is <tt>NULL</tt>, it will not be inserted, and the size
+ * of the array will not change.
+ *
+ * @param array   the array
+ * @param index   the index at which the new element is to be inserted
+ * @param elem    the element to be inserted
+ * @param replace specify whether old value will be replaced
+ *
+ * @return
+ * 0 if the new element was inserted\n
+ * 1 if the position was already filled\n
+ * 2 if the position was not valid\n
+ * 3 if it was not possible increase the array size
  */
-int arrayInsert(Array array,int index,void* inf,int replace);
+int arrayInsert(Array array,int index,void* elem,int replace);
 
 /**
- * Remove um elemento numa determinada posição de um array.
- * Permite devolver a informação do elemento removido, caso o valor de @a inf
- *   seja diferente de NULL.
- * Se o elemento pretendido não existir será colocado o valor NULL em @a inf.
- * Considera-se que não existe elemento numa posição do array, se o seu valor
- *   for NULL.\n
+ * Removes the element at the specified position of an array.
  *
- * @attention esta função não liberta a memória ocupada pela elemento removido.
+ * Provides the value of the removed element if the value of <tt>elem</tt> is
+ * not <tt>NULL</tt>.
  *
- * @param array array.
- * @param index posição do elemento que queremos remover.
- * @param inf   endereço onde é colocado o valor removido (ou NULL).
+ * @attention
+ * This function does not free the memory used by the removed element.
  *
- * @return 0 se o elemento for removido;\n
- *         1 se não existir elemento na posição indicada.
+ * @param array the array
+ * @param index the index of the element to be removed
+ * @param elem  pointer where the removed element should be put (or
+ * <tt>NULL</tt>)
+ *
+ * @return
+ * 0 if an element was removed from the specified position\n
+ * 1 otherwise
  */
-int arrayRemove(Array array,int index,void** inf);
+int arrayRemove(Array array,int index,void** elem);
 
 /**
- * Verifica qual o elemento numa determinada posição de um array.
- * Se não existir nenhum elemento na posição indicado é colocado o valor NULL
- *   em @a inf.
+ * Provides the element at the specified position of an array.
  * 
- * @attention esta função coloca em @a inf o endereço do elemento pretendido;
- *            depois de executar esta função é aconselhável fazer uma cópia da
- *            informação e passar a trabalhar com a cópia para que não haja
- *            problemas de partilha de referências.
+ * If there is no element at the specified position, it will be put the value
+ * <tt>NULL</tt> at <tt>elem</tt>.
+ * 
+ * @attention
+ * This function puts at <tt>elem</tt> a pointer to the element at the specified
+ * position.  Changes to this element will affect the element in the array.
  *
- * @param array array.
- * @param index posição do elemento que procuramos.
- * @param inf   endereço onde será colocado o resultado.
+ * @param array the array
+ * @param index the index of the element to be provided
+ * @param elem  pointer where the element at the specified position will be put
  *
- * @return 0 se existir elemento na posição pretendida;\n
- *         1 se não existir elemento na posição indicada.
+ * @return
+ * 0 if there was an element at the specified position\n
+ * 1 otherwise
  */
-int arrayAt(Array array,int index,void** inf);
+int arrayAt(Array array,int index,void** elem);
 
 /**
- * Altera a capacidade do array.
- * Apenas permite aumentar a capacidade do array.
+ * Increases the capacity of an array.
  *
- * @param array array.
- * @param size  nova capacidade do array.
+ * The new capacity must be greater than the current one.
  *
- * @return 0 se a dimensão for alterada;\n
- *         1 se ocorrer algum erro durante o redimensionamento do array;\n
- *         2 se o valor da nova dimensão for inferior à dimensão actual.
+ * @param array the array
+ * @param size  the new capacity
+ *
+ * @return
+ * 0 if the capacity of the array was increased\n
+ * 1 if it was not possible change the array capacity\n
+ * 2 if the new capacity was less than the current one
  */
 int arrayResize(Array array,int size);
 
 /**
- * Determina o número de elementos de um array.
- * Devolve o valor do campo @a size do array.
+ * Returns the size of an array.
  *
- * @param array array.
+ * @param array the array
  *
- * @return número de elementos do array.
+ * @return
+ * the size of the array
  */
 int arraySize(Array array);
 
 /**
- * Determina a capacidade de um array.
- * Devolve o valor do campo @a capacity do array.
+ * Return the capacity of an array.
  *
- * @param array array.
+ * @param array the array
  *
- * @return capacidade do array.
+ * @return
+ * the capacity of the array
  */
 int arrayCapacity(Array array);
 
 /**
- * Aplica uma função aos elementos de um array.
- * A função @c fun tem que ser do tipo: <tt>void @c fun(void*)</tt>.
+ * Applies a function to the elements of an array.
  *
- * @param array array.
- * @param fun   função a ser aplicada.
+ * The function to be applied must be of type <tt>void fun(void*)</tt>.
  *
- * @return 0 se o array não estiver vazio;\n
- *         1 se o array estiver vazio.
+ * @param array the array
+ * @param fun   the function to be applied
+ *
+ * @return
+ * 0 if the array was not empty\n
+ * 1 otherwise
  */
 int arrayMap(Array array,void(*fun)(void*));
 
 /**
- * Cria um iterador a partir de um array.
- * Se ocorrer algum erro a função devolve NULL.
+ * Creates an iterator from an array.
  *
  * @see Iterator
  *
- * @param array array.
+ * @param array the array
  *
- * @return iterador criado ou NULL.
+ * @return
+ * <tt>NULL</tt> if an error occurred\n
+ * the iterator otherwise
  */
 Iterator arrayIterator(Array array);
 

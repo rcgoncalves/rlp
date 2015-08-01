@@ -1,37 +1,36 @@
 /**
- * Implementação de um array dinâmico.
+ * Implementation of a dynamic array.
  *
- * @author Rui Carlos A. Gonçalves <rcgoncalves.pt@gmail.com>
+ * @author Rui Carlos Gonçalves
  * @file array.c
- * @version 2.0.2
- * @date 02/2009
+ * @version 3.0
+ * @date 10/2011
  */
 #include <stdlib.h>
 #include "array.h"
 
 Array newArray(int size)
 {
-  Array array;
-
-  array=(Array)malloc(sizeof(SArray));
-
-  if(array)
+  Array array=NULL;
+  if(size>0)
   {
-    array->capacity=size;
-    array->size=0;
-    array->array=(void**)calloc(size,sizeof(void*));
-
-    if(array->array) return array;
-    else
+    array=malloc(sizeof(SArray));
+    if(array)
     {
-      free(array);
-      return NULL;
+      array->capacity=size;
+      array->size=0;
+      array->array=calloc(size,sizeof(void*));
+      if(!array->array)
+      {
+        free(array);
+	array=NULL;
+      }
     }
   }
-  else return NULL;
+  return array;
 }
 
-//##############################################################################
+//==============================================================================
 
 void arrayDelete(Array array)
 {
@@ -39,157 +38,151 @@ void arrayDelete(Array array)
   free(array);
 }
 
-//##############################################################################
+//==============================================================================
 
-int arrayInsert(Array array,int index,void* inf,int replace)
+int arrayInsert(Array array,int index,void* elem,int replace)
 {
-  if(index<0) return 2;
+  int result=0;
+  if(index<0) result=2;
   else if(index>=array->capacity)
   {
-    if(!arrayResize(array,index+1))
+    if(arrayResize(array,index+1)) result=3;
+    else
     {
       array->size++;
-      array->array[index]=inf;
-      return 0;
+      array->array[index]=elem;
     }
-    else return 3;
   }
   else if(array->array[index])
   {
-    if(replace) array->array[index]=inf;
-    return 1;
+    if(replace) array->array[index]=elem;
+    result=1;
   }
   else 
   {
     array->size++;
-    array->array[index]=inf;
-    return 0;
+    array->array[index]=elem;
   }
+  return result;
 }
 
-//##############################################################################
+//==============================================================================
 
-int arrayRemove(Array array,int index,void** inf)
+int arrayRemove(Array array,int index,void** elem)
 {
+  int result=0;
   if(index<0||index>=array->capacity)
   {
-    if(inf) *inf=NULL;
-    return 1;
+    if(elem) *elem=NULL;
+    result=1;
   }
   else if(!array->array[index])
   {
-    if(inf) *inf=NULL;
-    return 1;
+    if(elem) *elem=NULL;
+    result=1;
   }
   else
   {
-    if(inf) *inf=array->array[index];
+    if(elem) *elem=array->array[index];
     array->array[index]=NULL;
     array->size--;
-    return 0;
   }
+  return result;
 }
 
-//##############################################################################
+//==============================================================================
 
-int arrayAt(Array array,int index,void** inf)
+int arrayAt(Array array,int index,void** elem)
 {
+  int result=0;
   if(index<0||index>=array->capacity)
   {
-    *inf=NULL;
-    return 1;
+    *elem=NULL;
+    result=1;
   }
   else if(!array->array[index])
   {
-    *inf=NULL;
-    return 1;
+    *elem=NULL;
+    result=1;
   }
-  else
-  {
-    *inf=array->array[index];
-    return 0;
-  }
+  else *elem=array->array[index];
+  return result;
 }
 
-//##############################################################################
+//==============================================================================
 
 int arrayResize(Array array,int size)
 {
-  int i;
+  int i,result=0;
   void** newarray;
-
-  if(array->capacity>=size) return 2;
+  if(array->capacity>=size) result=2;
   else
   {
-    newarray=(void**)realloc(array->array,size*sizeof(void*));
-
-    if(newarray)
+    newarray=realloc(array->array,size*sizeof(void*));
+    if(!newarray) result=1;
+    else
     {
-      for(i=array->capacity;i<size;i++)
-        newarray[i]=NULL;
-
+      for(i=array->capacity;i<size;i++) newarray[i]=NULL;
       array->array=newarray;
       array->capacity=size;
-
-      return 0;
     }
-    else return 1;
   }
+  return result;
 }
 
-//##############################################################################
+//==============================================================================
 
 int arraySize(Array array)
 {
-  return(array->size);
+  return array->size;
 }
 
-//##############################################################################
+//==============================================================================
 
 int arrayCapacity(Array array)
 {
-  return(array->capacity);
+  return array->capacity;
 }
 
-//##############################################################################
+//==============================================================================
 
 int arrayMap(Array array,void(*fun)(void*))
 {
-  int i,j;
-
-  if(!array->size) return 1;
+  int i,j,result=0;
+  if(!array->size) result=1;
   else
   {
     for(i=0,j=0;i<array->capacity&&j<array->size;i++)
+    {
       if(array->array[i])
       {
         fun(array->array[i]);
         j++;
       }
-
-    return 0;
+    }
   }
+  return result;
 }
 
-//##############################################################################
+//==============================================================================
 
 Iterator arrayIterator(Array array)
 {
   int ctrl,i,j;
   Iterator it;
-
   it=newIt(array->size);
   for(ctrl=0,i=0,j=0;i<array->capacity&&j<array->size&&!ctrl;i++)
+  {
     if(array->array[i])
     {
       ctrl=itAdd(it,array->array[i]);
       j++;
     }
-
+  }
   if(ctrl)
   {
     itDelete(it);
-    return NULL;
+    it=NULL;
   }
-  else return it;
+  return it;
 }
