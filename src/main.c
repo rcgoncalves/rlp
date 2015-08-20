@@ -176,21 +176,21 @@ int opt(int argc,char** argv,char** in,char** out)
                  break;
       case 't' : res+=1;
                  break;
-      case 'h' : puts("rlp version 1.1, Copyright (C) 2009 Rui Carlos A. Goncalves\n"
+      case 'h' : puts("rlp version 1.5, Copyright (C) 2006, 2009, 2015 Rui Carlos Goncalves\n"
                       "rlp comes with ABSOLUTELY NO WARRANTY.  This is free software, and\n"
                       "you are welcome to redistribute it under certain conditions.  See the GNU\n"
                       "General Public Licence for details.\n\n"
                       "Solve linear programming problems using simplex method.\n\n"
                       "Options:\n"
                       "  --help                 Print this help\n"
-                      "  --version              Print version number\n"
+                      "  --version              Print version info\n"
                       "  --input=<file>         Input file (default: stdin)\n"
                       "  --tables               Print all tables\n"
                       "  --output=<file>        Output file (default: stdout)"
                      );
                  res-=2;
                  break;
-      case 'v' : puts("rlp version 1.1, Copyright (C) 2009 Rui Carlos A. Goncalves\n"
+      case 'v' : puts("rlp version 1.5, Copyright (C) 2006, 2009, 2015 Rui Carlos Goncalves\n"
                       "rlp comes with ABSOLUTELY NO WARRANTY.  This is free software, and\n"
                       "you are welcome to redistribute it under certain conditions.  See the GNU\n"
                       "General Public Licence for details."
