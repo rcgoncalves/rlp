@@ -1,23 +1,15 @@
-2015-08-01 Rui Carlos Gonçalves <rcgoncalves.pt@gmail.com>
+2015-08-20 Rui Carlos Gonçalves <rcgoncalves.pt@gmail.com>
 	* Version 1.5
-
 	* Updated LibRCG to the latest version.
-
 	* Documentation translated to English.
-
 	* Minor improvements to avoid compilation warnings.
 
 2009-02-07 Rui Carlos Gonçalves <rcgoncalves.pt@gmail.com>
 	* Version 1.1.
-	
 	* Updated LibRCG to latest version.
-	
 	* Documentation reviewed.
-
 	* Program output translated to English.
-
 	* src/main.c (opt): Added option to show program version.
-
 	* src/rlp.c (simplex): Added test to check when the output file is
 	NULL, so that the program does not try to print the matrix in such
 	case.
